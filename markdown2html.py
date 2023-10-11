@@ -13,59 +13,52 @@ Example:
     ./markdown2html.py README.md README.html
 """
 
-import argparse
-import re
 import sys
 import os
+import re
 import hashlib
 
-def convert_md_to_html(input_file, output_file):
-    # Read the contents of the input file
-    with open(input_file) as f:
-        md_content = f.read()
+# Check the number of arguments
+if len(sys.argv) != 3:
+    print("Usage: ./markdown2html.py <Markdown_file> <Output_file>", file=sys.stderr)
+    sys.exit(1)
 
-    # Define a regular expression pattern to match [[text]] for MD5 hashing
-    md5_pattern = r'\[\[(.*?)\]\]'
-    
-    # Use re.sub to replace [[text]] with its MD5 hash (lowercase)
-    def md5_replace(match):
-        content = match.group(1)
-        return hashlib.md5(content.encode()).hexdigest().lower()
+# Extract the input and output filenames from the command line arguments
+markdown_file = sys.argv[1]
+output_file = sys.argv[2]
 
-    html_content = re.sub(md5_pattern, md5_replace, md_content)
+# Check if the Markdown file exists
+if not os.path.exists(markdown_file):
+    print(f"Missing {markdown_file}", file=sys.stderr)
+    sys.exit(1)
 
-    # Define a regular expression pattern to match ((text)) for case-insensitive content replacement
-    replace_pattern = r'\(\((.*?)\)\)'
-    
-    # Use re.sub to remove all 'c' characters (case-insensitive) from the content
-    def replace_content(match):
-        content = match.group(1)
-        return content.replace('c', '', flags=re.IGNORECASE)
+# Regular expressions to match custom syntax
+md5_pattern = re.compile(r'\[\[(.*?)\]\]')
+remove_c_pattern = re.compile(r'\(\((.*?)\)\)')
 
-    html_content = re.sub(replace_pattern, replace_content, html_content)
+# Function to convert custom syntax to HTML
+def md5_to_html(match):
+    content = match.group(1)
+    md5_hash = hashlib.md5(content.encode('utf-8')).hexdigest()
+    return f'<p>{md5_hash}</p>'
 
-    # Write the HTML content to the output file
-    with open(output_file, 'w') as f:
-        f.write(html_content)
+def remove_c_to_html(match):
+    content = match.group(1)
+    content_without_c = content.replace('c', '', -1)
+    return f'<p>{content_without_c}</p>'
 
-if __name__ == '__main__':
-    # Parse command-line arguments
-    parser = argparse.ArgumentParser(description='Convert markdown to HTML with support for various custom syntax')
-    parser.add_argument('input_file', help='path to input markdown file')
-    parser.add_argument('output_file', help='path to output HTML file')
+# Read the Markdown file, process custom syntax, and write to the output file
+with open(markdown_file, 'r') as markdown_input:
+    markdown_content = markdown_input.read()
 
-    args = parser.parse_args()
+# Convert custom syntax to HTML
+markdown_content = md5_pattern.sub(md5_to_html, markdown_content)
+markdown_content = remove_c_pattern.sub(remove_c_to_html, markdown_content)
 
-    # Check if the correct number of arguments is provided
-    if len(sys.argv) != 3:
-        sys.stderr.write("Usage: ./markdown2html.py [input_file] [output_file]\n")
-        sys.exit(1)
+# Write the HTML content to the output file
+with open(output_file, 'w') as html_output:
+    html_output.write(markdown_content)
 
-    # Check if the input file exists
-    if not os.path.isfile(args.input_file):
-        sys.stderr.write('Missing {0}\n'.format(args.input_file))
-        sys.exit(1)
-
-    # Convert the markdown file to HTML with custom syntax handling
-    convert_md_to_html(args.input_file, args.output_file)
+# Exit with code 0
+sys.exit(0)
 
