@@ -23,7 +23,7 @@ def convert_md_to_html(input_file, output_file):
             # Get the content of the heading
             h_content = match.group(2)
             # Append the HTML equivalent of the heading
-            html_content.append(f'<h{h_level}>{h_content}</h{h_level}>\n')
+            html_content.append('<h{0}>{1}</h{0}>\n'.format(h_level, h_content))
         else:
             html_content.append(line)
 
