@@ -38,7 +38,7 @@ def convert_md_to_html(input_file, output_file):
     with open(output_file, 'w', encoding='utf-8') as f:
         f.writelines(html_content)
 
-if __name__ == '__main':
+if __name__ == '__main__':
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description='Convert markdown to HTML')
     parser.add_argument('input_file', help='path to input markdown file')
@@ -48,13 +48,13 @@ if __name__ == '__main':
 
     # Check if the correct number of arguments is provided
     if len(sys.argv) != 3:
-        print("Usage: ./markdown2html.py [input_file] [output_file]", file=sys.stderr)
+        sys.stderr.write("Usage: ./markdown2html.py [input_file] [output_file]\n")
         sys.exit(1)
 
     # Check if the input file exists
     input_path = pathlib.Path(args.input_file)
     if not input_path.is_file():
-        print(f'Missing {input_path}', file=sys.stderr)
+        sys.stderr.write(f'Missing {input_path}\n')
         sys.exit(1)
 
     # Convert the markdown file to HTML
