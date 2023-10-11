@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 """
 This is a script to convert a Markdown file to HTML.
 
@@ -20,7 +20,7 @@ import os
 
 def convert_md_to_html(input_file, output_file):
     # Read the contents of the input file
-    with open(input_file, encoding='utf-8') as f:
+    with open(input_file) as f:
         md_content = f.readlines()
 
     html_content = []
@@ -35,7 +35,7 @@ def convert_md_to_html(input_file, output_file):
             html_content.append(line)
 
     # Write the HTML content to the output file
-    with open(output_file, 'w', encoding='utf-8') as f:
+    with open(output_file, 'w') as f:
         f.writelines(html_content)
 
 if __name__ == '__main__':
