@@ -48,13 +48,13 @@ if __name__ == '__main__':
 
     # Check if the correct number of arguments is provided
     if len(sys.argv) != 3:
-        sys.stderr.write("Usage: ./markdown2html.py [input_file] [output_file]\n")
+        print("Usage: ./markdown2html.py [input_file] [output_file]", file=sys.stderr)
         sys.exit(1)
 
     # Check if the input file exists
     input_path = pathlib.Path(args.input_file)
     if not input_path.is_file():
-        sys.stderr.write(f'Missing {input_path}\n')
+        print(f'Missing {input_path}', file=sys.stderr)
         sys.exit(1)
 
     # Convert the markdown file to HTML
