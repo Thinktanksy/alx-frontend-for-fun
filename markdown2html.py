@@ -14,9 +14,9 @@ Example:
 """
 
 import argparse
-import pathlib
 import re
 import sys
+import os
 
 def convert_md_to_html(input_file, output_file):
     # Read the contents of the input file
@@ -48,13 +48,12 @@ if __name__ == '__main__':
 
     # Check if the correct number of arguments is provided
     if len(sys.argv) != 3:
-        print >> sys.stderr, "Usage: ./markdown2html.py [input_file] [output_file]"
+        print("Usage: ./markdown2html.py [input_file] [output_file]", file=sys.stderr)
         sys.exit(1)
 
     # Check if the input file exists
-    input_path = pathlib.Path(args.input_file)
-    if not input_path.is_file():
-        print >> sys.stderr, 'Missing {0}'.format(input_path)
+    if not os.path.isfile(args.input_file):
+        print("Missing {0}".format(args.input_file), file=sys.stderr)
         sys.exit(1)
 
     # Convert the markdown file to HTML
